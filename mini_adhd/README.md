@@ -1,225 +1,97 @@
-# FocusFlow – Real-Time AI Tutor with ML Predictions
+# 🧠 FocusFlow: AI-Powered Adaptive Learning for Neurodivergent Minds
 
-A comprehensive real-time learning platform with AI-powered predictions, interactive content, and live analytics for ADHD learners.
+![FocusFlow Banner](https://img.shields.io/badge/Status-Active_Development-success?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
+![Tech](https://img.shields.io/badge/Built_With-Next.js_14_|_TensorFlow.js_|_MongoDB-black?style=for-the-badge)
 
-## 🚀 Features
+**FocusFlow** is a cutting-edge, real-time adaptive learning platform designed specifically to support individuals with ADHD and other neurodivergent traits. By leveraging **Convolutional Neural Networks (CNNs)** and **Browser-based Computer Vision**, FocusFlow creates a personalized study environment that dynamically adjusts to the user's focus levels in real-time.
 
-### Real-Time Data & Predictions
-- **Live Attention Tracking**: Real-time monitoring with ML predictions
-- **Performance Forecasting**: TensorFlow.js-powered performance predictions
-- **Engagement Monitoring**: AI-driven engagement level tracking
-- **Mood Analysis**: Real-time mood and emotional state tracking
+---
 
-### Interactive Content Hub
-- **Visual Learning**: Content with beautiful pictures and illustrations
-- **Interactive Games**: Counting games, memory palaces, attention training
-- **Multi-Modal Content**: Visual, auditory, and kinesthetic learning options
-- **ADHD-Friendly Design**: Optimized for attention and engagement
+## 🚀 Key Features
 
-### Advanced Analytics
-- **Real-Time Dashboard**: Live metrics with animated visualizations
-- **AI Predictions**: Machine learning predictions with confidence scores
-- **Data Visualization**: Chart.js-powered real-time charts
-- **WebSocket Integration**: Instant updates and live data streaming
+### 👁️ Real-Time Attention Tracking
+-   **Privacy-First Computer Vision**: Uses **TensorFlow.js (MediaPipe Face Mesh)** to analyze gaze direction, blink rates, and head pose client-side. **No video data is ever recorded or sent to a server.**
+-   **Distraction Detection**: Instantly detects when a user looks away or loses focus and provides gentle nudges to return to the task.
+-   **Fatigue Analysis**: Monitors blink patterns to detect cognitive fatigue and suggests break times before burnout occurs.
 
-## 🛠️ Tech Stack
+### 🧠 Adaptive Learning Engine
+-   **Dynamic Difficulty Adjustment**: The system lowers quiz difficulty when it senses frustration and increases it when the user is "in the zone."
+-   **Personalized ML Predictions**: Custom neural networks (`tf.layers`) predict future engagement trends based on session history, time of day, and performance metrics.
 
-- **Frontend**: Next.js 14, React 18, TypeScript, Tailwind CSS
-- **Backend**: Next.js API Routes, MongoDB, Mongoose
-- **ML/AI**: TensorFlow.js, Custom Neural Networks
-- **Real-Time**: WebSocket (Socket.IO), Live Data Collection
-- **Visualization**: Chart.js, React-ChartJS-2
-- **UI/UX**: Framer Motion, Responsive Design
+### 🎮 Gamification & Progress
+-   **Visual Feedback**: Real-time charts and heatmaps show focus quality over time.
+-   **Reward System**: Earn points and streaks for maintaining "Deep Work" states.
 
-## 📦 Quick Start
+---
 
-1. **Environment Setup**:
+## 🛠️ Technology Stack
 
-Create `.env.local` in the project root:
+*   **Frontend**: [Next.js 14](https://nextjs.org/) (App Router), TypeScript, Tailwind CSS, Framer Motion.
+*   **AI/ML**: [TensorFlow.js](https://www.tensorflow.org/js), MediaPipe Face Mesh.
+*   **Backend**: Node.js (Serverless Actions), MongoDB (Mongoose).
+*   **Authentication**: Custom JWT-based auth with Role-Based Access Control (Student, Parent, Educator).
 
-```bash
-MONGODB_URI=mongodb+srv://<user>:<pass>@<cluster>.mongodb.net/?retryWrites=true&w=majority&appName=<cluster>
-MONGODB_DB=focusflow
-JWT_SECRET=<strong-random-string>
-NEXT_PUBLIC_WS_URL=http://localhost:3000
-```
+---
 
-Generate JWT secret: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+## 💻 Getting Started
 
-2. **Install & Run**:
+### Prerequisites
+-   Node.js 18+
+-   MongoDB Atlas Account
 
-```bash
-npm install
-npm run dev
-```
+### Installation
 
-3. **Seed Content** (Optional):
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/Abhigyan0-07/ADHD_detection_with_realTimePrediction.git
+    cd ADHD_detection_with_realTimePrediction
+    ```
 
-```bash
-node scripts/setup.js
-```
+2.  **Install dependencies**
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
 
-4. **Verify Setup**:
+3.  **Configure Environment**
+    Create a `.env.local` file in the root directory:
+    ```env
+    MONGODB_URI=your_mongodb_connection_string
+    JWT_SECRET=your_secure_random_string
+    ```
 
-Visit `http://localhost:3000/api/health` - should return `{ ok: true }`
+4.  **Run the Development Server**
+    ```bash
+    npm run dev
+    ```
+    Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-## 🎯 Usage
+---
 
-### Dashboard Features
-- **Overview**: Real-time metrics with animated cards
-- **Content Hub**: Interactive learning with pictures and games
-- **Real-Time Analytics**: Live predictions and data visualization
-- **Attention Tracker**: ML-powered attention monitoring
+## 🛡️ Privacy & Ethics
+FocusFlow is built with a **Privacy-First Architecture**.
+*   **Local Inference**: All camera processing happens directly in your browser.
+*   **Data Minimization**: Only abstract metadata (e.g., "Attention Score: 85%") is stored to track progress; raw video frames are discarded immediately.
 
-### Content Types
-- **Math Adventures**: Counting games with animal pictures
-- **Reading Stories**: Visual comprehension with illustrations
-- **Science Explorer**: Interactive planet exploration
-- **Attention Training**: Focus-building exercises
-- **Memory Palace**: Visual memory techniques
-
-### Real-Time Features
-- **Live Data Collection**: Automatic data gathering every 3 seconds
-- **ML Predictions**: AI predictions every 30 seconds
-- **WebSocket Updates**: Instant real-time updates
-- **Confidence Scoring**: Prediction accuracy tracking
-
-## 📊 API Endpoints
-
-### Real-Time Data
-- `POST /api/realtime/data` - Collect real-time data
-- `GET /api/realtime/data` - Fetch recent data
-- `GET /api/realtime/summary` - Get data summary
-- `POST /api/realtime/predict` - Make ML predictions
-- `GET /api/realtime/predict` - Fetch predictions
-
-### Content Management
-- `GET /api/content` - Fetch content with filters
-- `POST /api/content` - Create new content
-- `POST /api/content/seed` - Seed sample content
-
-### User Management
-- `POST /api/auth/signup` - User registration
-- `POST /api/auth/login` - User authentication
-- `GET /api/user/profile` - Get user profile
-
-## 🧠 Machine Learning
-
-### Prediction Models
-- **Attention Trend Model**: Predicts attention levels
-- **Performance Forecast**: Predicts learning performance
-- **Engagement Level**: Predicts content engagement
-
-### Features Used
-- Recent attention data (last 30 minutes)
-- Recent performance data
-- Time of day and day of week
-- Session duration and break count
-- User age and ADHD score
-
-### Model Architecture
-- Neural networks with 2-3 hidden layers
-- Dropout regularization (0.2-0.3)
-- L2 regularization
-- Sigmoid activation for 0-1 outputs
-- Adam optimizer with learning rate 0.001
-
-## 🎨 Content Features
-
-### Visual Elements
-- High-quality images from Unsplash
-- Interactive image galleries
-- Visual progress indicators
-- Animated UI components
-
-### Interactive Components
-- Counting games with clickable animals
-- Comprehension quizzes with visual feedback
-- Planet explorer with interactive models
-- Attention training with timers
-- Memory palace with room exploration
-
-### Accessibility
-- Visual, auditory, and kinesthetic options
-- ADHD-friendly design principles
-- Adjustable difficulty levels
-- Multi-modal content delivery
-
-## 🔧 Development
-
-### Project Structure
-```
-├── app/                    # Next.js app directory
-│   ├── api/               # API routes
-│   ├── dashboard/         # Dashboard pages
-│   └── (auth)/           # Authentication pages
-├── components/            # React components
-├── lib/                   # Utility libraries
-│   ├── ml/               # Machine learning
-│   ├── realtime/         # Real-time data
-│   └── websocket/        # WebSocket handling
-├── models/               # Database models
-└── scripts/              # Setup scripts
-```
-
-### Key Files
-- `lib/ml/predictor.ts` - ML prediction service
-- `lib/realtime/collector.ts` - Data collection system
-- `lib/websocket/` - WebSocket server and client
-- `models/` - Database schemas
-- `app/dashboard/realtime/` - Real-time dashboard
-- `app/dashboard/content-hub/` - Content management
-
-## 🚀 Deployment
-
-### Vercel Deployment
-1. Set environment variables in Vercel dashboard
-2. Connect GitHub repository
-3. Deploy automatically on push
-
-### Environment Variables
-```bash
-MONGODB_URI=your_mongodb_connection_string
-MONGODB_DB=focusflow
-JWT_SECRET=your_jwt_secret
-NEXT_PUBLIC_WS_URL=your_websocket_url
-```
-
-## 📈 Performance
-
-### Real-Time Updates
-- Data collection: Every 3 seconds
-- ML predictions: Every 30 seconds
-- WebSocket heartbeat: Every 5 seconds
-- UI updates: Instant with animations
-
-### Optimization
-- Data buffering for efficient database writes
-- Connection pooling for MongoDB
-- Client-side caching for predictions
-- Lazy loading for content images
-
-## 🎯 Future Enhancements
-
-- [ ] Voice recognition for accessibility
-- [ ] Advanced ML models with more features
-- [ ] Collaborative learning features
-- [ ] Mobile app with React Native
-- [ ] Advanced analytics and reporting
-- [ ] Integration with external learning platforms
-
-## 📝 License
-
-MIT License - see LICENSE file for details.
+---
 
 ## 🤝 Contributing
+We welcome contributions from the community, especially those with expertise in accessibility, neuroscience, or machine learning.
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+---
 
-## 📞 Support
+## 📄 License
+Distributed under the MIT License. See `LICENSE` for more information.
 
-For questions or support, please open an issue on GitHub or contact the development team.
+---
+
+<p align="center">
+  <i>Built with ❤️ for better learning.</i>
+</p>
