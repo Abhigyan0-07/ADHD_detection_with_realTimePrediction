@@ -5,17 +5,38 @@ import { User } from '@/models/User'
 import { signJwt, setAuthCookie } from '@/lib/auth'
 
 export async function POST(req: NextRequest) {
-  await connectToDatabase()
-  const { email, password } = await req.json()
-  if (!email || !password) {
-    return NextResponse.json({ error: 'Missing credentials' }, { status: 400 })
+  try {
+    await connectToDatabase()
+    const body = await req.json()
+    const { email, password } = body;
+    
+    if (!email || !password) {
+      return NextResponse.json({ error: 'Missing credentials' }, { status: 400 })
+    }
+    
+    console.log(`🔐 Attempting login for: ${email}`);
+    
+    const user = await User.findOne({ email })
+    if (!user) {
+        console.log(`❌ User not found: ${email}`);
+        return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
+    }
+    
+    const ok = await bcrypt.compare(password, user.password)
+    if (!ok) {
+        console.log(`❌ Password mismatch for: ${email}`);
+        return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
+    }
+    
+    console.log(`✅ Password verified for: ${email}. Generating token...`);
+    const token = signJwt({ userId: user._id, role: user.role, name: user.name })
+    setAuthCookie(token)
+    
+    console.log(`✅ Login successful for: ${email}`);
+    return NextResponse.json({ ok: true })
+  } catch (error: any) {
+    console.error("❌ Login error:", error);
+    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
   }
-  const user = await User.findOne({ email })
-  if (!user) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
-  const ok = await bcrypt.compare(password, user.password)
-  if (!ok) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
-  const token = signJwt({ userId: user._id, role: user.role, name: user.name })
-  setAuthCookie(token)
-  return NextResponse.json({ ok: true })
 }
 

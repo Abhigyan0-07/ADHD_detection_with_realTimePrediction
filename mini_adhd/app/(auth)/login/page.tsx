@@ -23,7 +23,8 @@ export default function LoginPage() {
       let data: any = null;
       try {
         data = await res.json();
-      } catch {
+      } catch (e) {
+        console.error("Failed to parse login response:", e);
         /* response not JSON or empty */
       }
       if (!res.ok) throw new Error(data?.error || "Login failed");
