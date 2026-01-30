@@ -234,7 +234,7 @@ class MLPredictor {
     return Math.min(confidence, 0.95)
   }
 
-  private generateAttentionExplanationz(value: number, input: PredictionInput): string {
+  private generateAttentionExplanation(value: number, input: PredictionInput): string {
     const isADHD = input.adhdScore && input.adhdScore > 70
     
     if (value > 0.7) {
