@@ -9,8 +9,11 @@ export async function GET(req: NextRequest) {
   try {
     const code = req.nextUrl.searchParams.get('code');
     if (!code) {
+      console.error('❌ No code provided in callback');
       return NextResponse.json({ error: 'No code provided' }, { status: 400 });
     }
+    
+    console.log('✅ Auth code received, exchanging for tokens...');
 
     const client = new OAuth2Client(
       process.env.GOOGLE_CLIENT_ID,
@@ -19,8 +22,10 @@ export async function GET(req: NextRequest) {
     );
 
     const { tokens } = await client.getToken(code);
+    console.log('✅ Tokens received');
     client.setCredentials(tokens);
 
+    console.log('🔄 Fetching user info from Google...');
     const userInfoRes = await client.request({
       url: 'https://www.googleapis.com/oauth2/v3/userinfo',
     });
@@ -33,16 +38,21 @@ export async function GET(req: NextRequest) {
         picture?: string;
     };
 
+    console.log(`✅ User info received for: ${userInfo.email}`);
+
     if (!userInfo.email) {
        return NextResponse.json({ error: 'Email not found in Google profile' }, { status: 400 });
     }
 
+    console.log('🔄 Connecting to database...');
     await connectToDatabase();
+    console.log('✅ Database connected');
 
     // Check if user exists
     let user = await User.findOne({ email: userInfo.email });
 
     if (!user) {
+      console.log('🆕 User not found, creating new user...');
       // Create new user
       // Generate a random password since they are using Google
       const randomPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
@@ -67,21 +77,28 @@ export async function GET(req: NextRequest) {
             completedModules: []
         }
       });
+      console.log('✅ New user created');
+    } else {
+        console.log('✅ Existing user found');
     }
 
     // Sign JWT and set cookie
+    console.log('✍️ Signing JWT...');
     const token = signJwt({ userId: user._id, role: user.role, name: user.name });
     setAuthCookie(token);
+    console.log('✅ Auth cookie set');
 
     // Redirect to dashboard (or adhd-test if score missing)
     if (user.adhdScore === undefined || user.adhdScore === null) {
+        console.log('➡️ Redirecting to ADHD test');
         return NextResponse.redirect(new URL('/adhd-test', req.url));
     }
 
+    console.log('➡️ Redirecting to dashboard');
     return NextResponse.redirect(new URL('/dashboard', req.url));
 
   } catch (error: any) {
-    console.error('Google Auth Error:', error);
+    console.error('❌ Google Auth Error:', error);
     return NextResponse.json({ error: error.message || 'Authentication failed' }, { status: 500 });
   }
 }
