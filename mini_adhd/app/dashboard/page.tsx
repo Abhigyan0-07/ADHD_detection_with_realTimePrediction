@@ -36,6 +36,7 @@ export default function DashboardPage() {
   // Gamification State
   const [totalPoints, setTotalPoints] = useState(0);
   const [focusSeconds, setFocusSeconds] = useState(0);
+  const [level, setLevel] = useState(1);
 
   // Initialize Trackers
   const mouseMetrics = useMouseTracker();
@@ -122,6 +123,7 @@ export default function DashboardPage() {
       setProfile(data);
       if (data.gamification?.points) {
         setTotalPoints(data.gamification.points);
+        setLevel(data.gamification.level || 1);
       }
     } catch (error) {
       console.error("Error fetching profile:", error);
@@ -171,6 +173,9 @@ export default function DashboardPage() {
         <div className="text-sm text-gray-500 flex flex-col items-end space-y-2">
           <div className="bg-yellow-100 px-3 py-1 rounded-full text-yellow-800 font-bold flex items-center">
             <span className="mr-1">🪙</span> {totalPoints}
+          </div>
+          <div className="bg-purple-100 px-3 py-1 rounded-full text-purple-800 font-bold flex items-center">
+            <span className="mr-1">⭐</span> Lvl {level}
           </div>
           <div className="flex items-center space-x-4">
              <div className="text-right">
@@ -259,9 +264,9 @@ export default function DashboardPage() {
                 <span className="text-yellow-600">→</span>
               </div>
             </Link>
-            <Link href="/dashboard/content-hub" className="block p-3 bg-green-50 dark:bg-green-900/20 rounded-lg hover:bg-green-100 transition-colors">
+            <Link href="/dashboard/learning" className="block p-3 bg-green-50 dark:bg-green-900/20 rounded-lg hover:bg-green-100 transition-colors">
               <div className="flex items-center justify-between">
-                <span className="font-medium text-green-800 dark:text-green-200">📚 Content Hub</span>
+                <span className="font-medium text-green-800 dark:text-green-200">📚 Learning Hub</span>
                 <span className="text-green-600">→</span>
               </div>
             </Link>

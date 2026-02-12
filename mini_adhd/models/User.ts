@@ -34,6 +34,7 @@ export interface IUser extends Document {
       activity: string
       score: number
     }[]
+    completedModules: string[]
   }
   createdAt: Date
   updatedAt: Date
@@ -70,7 +71,8 @@ const UserSchema = new Schema<IUser>({
       date: { type: Date, default: Date.now },
       activity: String,
       score: Number
-    }]
+    }],
+    completedModules: [{ type: String }]
   }
 }, { timestamps: true })
 
