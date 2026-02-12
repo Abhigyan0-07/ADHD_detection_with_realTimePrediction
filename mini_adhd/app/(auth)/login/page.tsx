@@ -44,8 +44,11 @@ export default function LoginPage() {
   }
 
   const handleSocialLogin = (provider: string) => {
-    console.log(`Login with ${provider}`);
-    // Placeholder for actual social login logic
+    if (provider === "Google") {
+      window.location.href = "/api/auth/google";
+    } else {
+      console.log(`Login with ${provider} not implemented yet`);
+    }
   };
 
   return (
