@@ -258,6 +258,52 @@ export default function DashboardPage() {
 
           {/* Right Column: Secondary Metrics (Span 4) */}
           <div className="lg:col-span-4 flex flex-col gap-6">
+
+            {/* Screening Result Card */}
+            <div className="glass-card rounded-3xl p-6 relative overflow-hidden group">
+               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <span className="text-4xl">📝</span>
+               </div>
+               
+               <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-blue-500/20 p-2 rounded-xl text-blue-300">
+                     <span className="text-xl">📊</span>
+                  </div>
+                  <div>
+                     <h3 className="font-semibold text-white/90">Screening Result</h3>
+                     <p className="text-xs text-white/50">Baseline Profile</p>
+                  </div>
+               </div>
+
+               <div className="space-y-4">
+                  <div className="flex justify-between items-end">
+                     <div>
+                        <div className="text-sm text-white/60 mb-1">ADHD Indication</div>
+                        <div className={`text-2xl font-bold ${
+                           adhdLevel === 'High' ? 'text-red-400' : 
+                           adhdLevel === 'Moderate' ? 'text-yellow-400' : 'text-green-400'
+                        }`}>
+                           {adhdLevel}
+                        </div>
+                     </div>
+                     <div className="text-right">
+                        <div className="text-sm text-white/60 mb-1">Score</div>
+                        <div className="text-xl font-mono text-white/90">{profile?.adhdScore || 0}/100</div>
+                     </div>
+                  </div>
+                  
+                  {/* Score Progress Bar */}
+                  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                     <div 
+                        className={`h-full rounded-full ${
+                           adhdLevel === 'High' ? 'bg-red-500' : 
+                           adhdLevel === 'Moderate' ? 'bg-yellow-500' : 'bg-green-500'
+                        }`}
+                        style={{ width: `${profile?.adhdScore || 0}%` }}
+                     />
+                  </div>
+               </div>
+            </div>
             
             {/* Mouse Activity Card */}
             <motion.div 
