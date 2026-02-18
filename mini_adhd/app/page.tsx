@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/Button";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-center p-6 mesh-gradient text-white overflow-hidden relative">
+    <main className="flex min-h-screen items-center justify-center p-6 mesh-bg text-white overflow-hidden relative">
       <div className="fixed top-0 left-0 w-full h-full -z-10 opacity-30 pointer-events-none">
         <div className="absolute top-[20%] left-[10%] w-72 h-72 bg-primary/20 blur-[120px] rounded-full" />
         <div className="absolute bottom-[20%] right-[10%] w-96 h-96 bg-purple-500/10 blur-[120px] rounded-full" />

@@ -167,7 +167,7 @@ export default function ADHDTestPage() {
   const currentQ = ADHD_QUESTIONS[currentQuestion]
 
   return (
-    <div className="min-h-screen mesh-gradient text-white overflow-hidden font-display selection:bg-primary/30">
+    <div className="min-h-screen mesh-bg text-white overflow-hidden font-display selection:bg-primary/30">
       <div className="relative flex h-screen w-full max-w-md mx-auto flex-col p-6">
         {/* Background decoration */}
         <div className="fixed top-0 left-0 w-full h-full -z-10 opacity-30 pointer-events-none">

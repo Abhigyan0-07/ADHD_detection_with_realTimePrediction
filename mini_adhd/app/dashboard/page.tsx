@@ -98,7 +98,7 @@ export default function DashboardPage() {
   const attentionPercent = Math.round(attentionMetrics.score * 100);
 
   return (
-    <main className="min-h-screen mesh-gradient text-white p-4 md:p-8 relative overflow-hidden">
+    <main className="min-h-screen mesh-bg text-white p-4 md:p-8 relative overflow-hidden">
       {/* Background Ambience */}
       <div className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none">
         <div className="absolute top-[10%] left-[5%] w-96 h-96 bg-primary/10 blur-[150px] rounded-full" />
