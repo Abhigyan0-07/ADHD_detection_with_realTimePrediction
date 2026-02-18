@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { useTracking } from '@/components/context/TrackingContext'
 
 const ADHD_QUESTIONS = [
   {
@@ -120,6 +121,7 @@ const ADHD_QUESTIONS = [
 
 export default function ADHDTestPage() {
   const router = useRouter()
+  const { refreshProfile } = useTracking()
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<number[]>([])
   const [loading, setLoading] = useState(false)
@@ -151,6 +153,7 @@ export default function ADHDTestPage() {
       })
       
       if (res.ok) {
+        await refreshProfile()
         router.push('/dashboard')
       }
     } catch (error) {

@@ -2,30 +2,16 @@
 import React, { useEffect, useState } from 'react'
 import { useTracking } from '@/components/context/TrackingContext'
 import { getADHDLevel } from '@/lib/adaptiveEngine'
+import { usePathname } from 'next/navigation'
 
 export default function GlobalStatus() {
-  const { attentionMetrics } = useTracking()
-  const [profileScore, setProfileScore] = useState<number | null>(null)
-  
-  useEffect(() => {
-    // Fetch user profile for persistent ADHD score
-    const fetchProfile = async () => {
-      try {
-        const res = await fetch('/api/user/profile')
-        if (res.ok) {
-           const data = await res.json()
-           if (data.adhdScore !== undefined) {
-             setProfileScore(data.adhdScore)
-           }
-        }
-      } catch (e) {
-        console.error("Failed to fetch profile for global status", e)
-      }
-    }
-    fetchProfile()
-  }, [])
+  const { attentionMetrics, screeningResult } = useTracking()
+  const pathname = usePathname()
 
-  const screeningLevel = profileScore !== null ? getADHDLevel(profileScore) : 'Pend.'
+  // Hide on screening test page
+  if (pathname === '/adhd-test') return null
+
+  const screeningLevel = screeningResult !== null ? getADHDLevel(screeningResult) : 'Pend.'
   
   // Map Real-time Score to High/Medium/Low
   let focusLevel = 'Low'

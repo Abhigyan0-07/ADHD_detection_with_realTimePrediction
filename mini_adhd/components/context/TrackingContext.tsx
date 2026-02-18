@@ -11,6 +11,8 @@ interface TrackingContextType {
   eyeMetrics: any
   adhdProfile: ADHDProfile
   history: AttentionMetrics[]
+  screeningResult: number | null
+  refreshProfile: () => Promise<void>
 }
 
 const TrackingContext = createContext<TrackingContextType | undefined>(undefined)
@@ -46,6 +48,25 @@ export function TrackingProvider({ children }: { children: ReactNode }) {
   
   const [adhdProfile, setAdhdProfile] = useState<ADHDProfile>(emptyProfile)
   const [history, setHistory] = useState<AttentionMetrics[]>([])
+  const [screeningResult, setScreeningResult] = useState<number | null>(null)
+
+  const refreshProfile = async () => {
+    try {
+      const res = await fetch('/api/user/profile')
+      if (res.ok) {
+         const data = await res.json()
+         if (data.adhdScore !== undefined) {
+           setScreeningResult(data.adhdScore)
+         }
+      }
+    } catch (e) {
+      console.error("Failed to fetch profile in context", e)
+    }
+  }
+
+  useEffect(() => {
+    refreshProfile()
+  }, [])
 
   // Analysis Loop (Global)
   useEffect(() => {
@@ -74,7 +95,9 @@ export function TrackingProvider({ children }: { children: ReactNode }) {
       mouseMetrics, 
       eyeMetrics, 
       adhdProfile,
-      history 
+      history,
+      screeningResult,
+      refreshProfile
     }}>
       {children}
     </TrackingContext.Provider>
