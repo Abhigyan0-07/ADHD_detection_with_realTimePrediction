@@ -261,72 +261,102 @@ export default function DashboardPage() {
             
             {/* Mouse Activity Card */}
             <motion.div 
-               className="glass-card rounded-2xl p-6 border-l-4 border-green-400"
+               className="glass-card rounded-3xl p-6 relative overflow-hidden group"
                whileHover={{ scale: 1.02 }}
+               transition={{ type: "spring", stiffness: 300 }}
             >
-               <div className="flex justify-between items-start mb-4">
-                  <div className="p-2 bg-green-500/20 rounded-lg">
-                     <span className="text-2xl">🖱️</span>
-                  </div>
-                  <span className="text-xs font-mono text-green-300 bg-green-500/10 px-2 py-1 rounded">ACTIVITY</span>
+               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <svg className="w-24 h-24" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2v10h-2V2h2m0 16h-2v4h2v-4m-6-6H3v-2h4v2m14 0h-4v-2h4v2M3 12a9 9 0 0 1 9-9 9 9 0 0 1 9 9 9 9 0 0 1-9 9 9 9 0 0 1-9-9z"/></svg>
                </div>
-               <div className="space-y-1">
-                  <div className="text-3xl font-bold">{mouseMetrics.isIdle ? 'Idle' : 'Active'}</div>
-                  <div className="text-sm text-white/50">Erratic Score: {Math.round(mouseMetrics.erraticScore * 100)}%</div>
+               
+               <div className="flex items-center gap-3 mb-4">
+                  <div className={`p-3 rounded-2xl ${mouseMetrics.isIdle ? 'bg-yellow-500/20 text-yellow-300' : 'bg-green-500/20 text-green-300'}`}>
+                     <span className="text-xl">🖱️</span>
+                  </div>
+                  <div>
+                     <div className="text-xs font-bold text-white/40 uppercase tracking-wider">Mouse Activity</div>
+                     <div className="font-semibold text-lg">{mouseMetrics.isIdle ? 'Idle' : 'Active'}</div>
+                  </div>
+               </div>
+               
+               <div className="space-y-2">
+                  <div className="flex justify-between text-xs text-white/60">
+                     <span>Stability</span>
+                     <span>{Math.round((1 - mouseMetrics.erraticScore) * 100)}%</span>
+                  </div>
+                  <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                     <motion.div 
+                        className="h-full bg-green-400"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${(1 - mouseMetrics.erraticScore) * 100}%` }}
+                     />
+                  </div>
                </div>
             </motion.div>
 
             {/* Eye Contact Card */}
             <motion.div 
-               className="glass-card rounded-2xl p-6 border-l-4 border-purple-400"
+               className="glass-card rounded-3xl p-6 relative overflow-hidden group"
                whileHover={{ scale: 1.02 }}
+               transition={{ type: "spring", stiffness: 300 }}
             >
-               <div className="flex justify-between items-start mb-4">
-                  <div className="p-2 bg-purple-500/20 rounded-lg">
-                     <span className="text-2xl">👁️</span>
-                  </div>
-                  <span className="text-xs font-mono text-purple-300 bg-purple-500/10 px-2 py-1 rounded">GAZE</span>
+               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <svg className="w-24 h-24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
                </div>
-               <div className="space-y-1">
-                  <div className="text-3xl font-bold">{eyeMetrics.isDistracted ? 'Distracted' : 'Focused'}</div>
-                  <div className="text-sm text-white/50">{eyeMetrics.isDistracted ? 'Look at screen' : 'Tracking active'}</div>
+
+               <div className="flex items-center gap-3 mb-4">
+                  <div className={`p-3 rounded-2xl ${eyeMetrics.isDistracted ? 'bg-red-500/20 text-red-300' : 'bg-purple-500/20 text-purple-300'}`}>
+                     <span className="text-xl">👁️</span>
+                  </div>
+                  <div>
+                     <div className="text-xs font-bold text-white/40 uppercase tracking-wider">Eye Contact</div>
+                     <div className="font-semibold text-lg">{eyeMetrics.isDistracted ? 'Distracted' : 'Focused'}</div>
+                  </div>
+               </div>
+               
+               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/5 text-xs text-white/70">
+                  <div className={`w-1.5 h-1.5 rounded-full ${eyeMetrics.isDistracted ? 'bg-red-500' : 'bg-green-500'} animate-pulse`} />
+                  {eyeMetrics.isDistracted ? 'Please resume eye contact' : 'Tracking active'}
                </div>
             </motion.div>
 
             {/* Quick Actions */}
-            <div className="glass-card rounded-2xl p-6 space-y-4">
-               <h3 className="font-semibold text-lg text-white/90">Quick Actions</h3>
+            <div className="space-y-3">
+               <h3 className="font-medium text-white/60 ml-1">Quick Launch</h3>
                
-               <Link href="/dashboard/gamified" className="group block">
-                  <div className="w-full bg-gradient-to-r from-yellow-500/20 to-orange-500/20 hover:from-yellow-500/30 hover:to-orange-500/30 border border-yellow-500/30 rounded-xl p-4 transition-all flex items-center justify-between">
+               <Link href="/dashboard/gamified" className="block">
+                  <div className="glass-card p-4 rounded-2xl hover:bg-white/10 transition-colors flex items-center justify-between group">
                      <div className="flex items-center gap-3">
-                        <span className="text-2xl group-hover:scale-110 transition-transform">🎮</span>
-                        <span className="font-medium text-yellow-100">Gamified Mode</span>
+                        <div className="bg-yellow-500/20 p-2 rounded-xl text-yellow-300">🎮</div>
+                        <div>
+                           <div className="font-semibold text-white/90">Gamified Mode</div>
+                           <div className="text-xs text-white/50">Earn points & badges</div>
+                        </div>
                      </div>
-                     <span className="text-yellow-500/50 group-hover:translate-x-1 transition-transform">→</span>
+                     <span className="text-white/20 group-hover:text-white/60 transition-colors">→</span>
                   </div>
                </Link>
 
-               <Link href="/dashboard/learning" className="group block">
-                  <div className="w-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 hover:from-blue-500/30 hover:to-cyan-500/30 border border-blue-500/30 rounded-xl p-4 transition-all flex items-center justify-between">
+               <Link href="/dashboard/learning" className="block">
+                  <div className="glass-card p-4 rounded-2xl hover:bg-white/10 transition-colors flex items-center justify-between group">
                      <div className="flex items-center gap-3">
-                        <span className="text-2xl group-hover:scale-110 transition-transform">📚</span>
-                        <span className="font-medium text-blue-100">Learning Hub</span>
+                        <div className="bg-blue-500/20 p-2 rounded-xl text-blue-300">📚</div>
+                        <div>
+                           <div className="font-semibold text-white/90">Learning Hub</div>
+                           <div className="text-xs text-white/50">Adaptive lessons</div>
+                        </div>
                      </div>
-                     <span className="text-blue-500/50 group-hover:translate-x-1 transition-transform">→</span>
+                     <span className="text-white/20 group-hover:text-white/60 transition-colors">→</span>
                   </div>
                </Link>
-
+               
                <button 
                  onClick={() => setShowHeatmap(!showHeatmap)}
-                 className={`w-full p-4 rounded-xl border transition-all flex items-center gap-3 ${
-                   showHeatmap 
-                     ? 'bg-red-500/20 border-red-500/30 text-red-100' 
-                     : 'bg-white/5 border-white/10 hover:bg-white/10 text-white/70'
-                 }`}
+                 className={`w-full p-4 rounded-2xl glass-card transition-all flex items-center justify-center gap-2 hover:bg-white/10 ${showHeatmap ? 'border-red-500/30 bg-red-500/10' : ''}`}
                >
-                 <span>🔥</span>
-                 <span>{showHeatmap ? 'Disable Heatmap' : 'Enable Heatmap'}</span>
+                 <span className="text-sm font-medium text-white/70">
+                   {showHeatmap ? 'Disable Heatmap Overlay' : 'Enable Heatmap Overlay'}
+                 </span>
                </button>
             </div>
 
