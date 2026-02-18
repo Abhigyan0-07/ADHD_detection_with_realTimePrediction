@@ -252,7 +252,6 @@ export default function ADHDTestPage() {
                 disabled={currentQuestion === 0}
                 className="flex items-center gap-2 h-14"
               >
-                <span className="material-symbols-outlined text-sm">arrow_back_ios</span>
                 <span>Previous</span>
               </Button>
               
@@ -264,7 +263,6 @@ export default function ADHDTestPage() {
                 className="flex items-center justify-center gap-2 h-14"
               >
                 <span>{loading ? 'Processing...' : currentQuestion === ADHD_QUESTIONS.length - 1 ? 'Complete Test' : 'Next Question'}</span>
-                {!loading && <span className="material-symbols-outlined">arrow_forward_ios</span>}
               </Button>
             </div>
           </footer>
