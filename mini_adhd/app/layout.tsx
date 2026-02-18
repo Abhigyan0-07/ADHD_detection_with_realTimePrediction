@@ -10,16 +10,19 @@ export const metadata: Metadata = {
 
 import GlobalStatus from '@/components/ui/GlobalStatus'
 import { TrackingProvider } from '@/components/context/TrackingContext'
+import { EyeTrackerProvider } from '@/components/tracking/EyeTrackerContext'
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 transition-colors">
         <ThemeProvider>
-          <TrackingProvider>
-             <GlobalStatus />
-             {children}
-          </TrackingProvider>
+          <EyeTrackerProvider>
+            <TrackingProvider>
+               <GlobalStatus />
+               {children}
+            </TrackingProvider>
+          </EyeTrackerProvider>
         </ThemeProvider>
       </body>
     </html>
