@@ -181,25 +181,69 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Column: Hero Metric (Span 8) */}
           <div className="lg:col-span-8 flex flex-col gap-6">
-             {/* Placeholder for Hero Gauge - To be implemented next */}
-             <div className="glass-card rounded-3xl p-8 min-h-[300px] flex items-center justify-center relative overflow-hidden">
-                <div className="text-center space-y-4">
-                   <h2 className="text-2xl font-medium text-white/80">Current Attention</h2>
-                   <div className="text-8xl font-bold tracking-tighter bg-gradient-to-br from-white to-white/50 bg-clip-text text-transparent">
-                      {attentionPercent}%
-                   </div>
-                   <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium ${
-                      attentionMetrics.state === 'focused' ? 'bg-green-500/20 text-green-300 border border-green-500/30' :
-                      attentionMetrics.state === 'distracted' ? 'bg-red-500/20 text-red-300 border border-red-500/30' :
-                      'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                   }`}>
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-current opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-current"></span>
+             {/* Hero Gauge */}
+             <div className="glass-card rounded-3xl p-8 min-h-[350px] flex flex-col items-center justify-center relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-blue-500/5 group-hover:opacity-100 transition-opacity opacity-0" />
+                
+                <h2 className="text-xl font-medium text-white/70 mb-6 uppercase tracking-widest text-sm">Real-time Attention</h2>
+                
+                <div className="relative flex items-center justify-center">
+                   {/* Glow Effect */}
+                   <div className={`absolute inset-0 rounded-full blur-[50px] transition-all duration-1000 ${
+                      attentionMetrics.state === 'focused' ? 'bg-green-500/20' : 
+                      attentionMetrics.state === 'distracted' ? 'bg-red-500/20' : 'bg-blue-500/20'
+                   }`} />
+
+                   {/* SVG Gauge */}
+                   <svg className="w-64 h-64 transform -rotate-90">
+                      <circle
+                         cx="128"
+                         cy="128"
+                         r="110"
+                         fill="transparent"
+                         stroke="currentColor"
+                         strokeWidth="12"
+                         className="text-white/5"
+                      />
+                      <motion.circle
+                         cx="128"
+                         cy="128"
+                         r="110"
+                         fill="transparent"
+                         stroke={
+                            attentionMetrics.state === 'focused' ? '#4ade80' : 
+                            attentionMetrics.state === 'distracted' ? '#f87171' : '#60a5fa'
+                         }
+                         strokeWidth="12"
+                         strokeLinecap="round"
+                         initial={{ pathLength: 0 }}
+                         animate={{ pathLength: attentionMetrics.score }}
+                         transition={{ duration: 1, ease: "easeOut" }}
+                         className="drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+                      />
+                   </svg>
+
+                   {/* Center Text */}
+                   <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <span className="text-6xl font-bold tracking-tighter text-white">
+                         {attentionPercent}<span className="text-2xl text-white/50">%</span>
                       </span>
-                      {attentionMetrics.state.toUpperCase()}
+                      <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className={`mt-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                           attentionMetrics.state === 'focused' ? 'bg-green-500 text-green-950' : 
+                           attentionMetrics.state === 'distracted' ? 'bg-red-500 text-red-950' : 'bg-blue-500 text-blue-950'
+                        }`}
+                      >
+                         {attentionMetrics.state}
+                      </motion.div>
                    </div>
                 </div>
+
+                <p className="mt-8 text-white/40 text-sm max-w-md text-center">
+                   Based on live analysis of mouse movement patterns ({Math.round(mouseMetrics.erraticScore * 100)}% stability) and eye gaze consistency.
+                </p>
              </div>
 
              {/* Detailed Report Component */}
