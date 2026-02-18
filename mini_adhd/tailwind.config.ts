@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
+          DEFAULT: 'rgb(var(--primary) / <alpha-value>)',
           50: '#eef2ff',
           100: '#e0e7ff',
           200: '#c7d2fe',
@@ -21,6 +22,13 @@ const config: Config = {
           800: '#3730a3',
           900: '#312e81',
         },
+        background: {
+          light: 'rgb(var(--background-light) / <alpha-value>)',
+          dark: 'rgb(var(--background-dark) / <alpha-value>)',
+        },
+      },
+      fontFamily: {
+        display: ['Inter', 'sans-serif'],
       },
       borderRadius: {
         xl: '1rem',
