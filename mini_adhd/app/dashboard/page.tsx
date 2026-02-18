@@ -3,12 +3,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { getADHDLevel, getLearningMode } from "@/lib/adaptiveEngine";
-import { useMouseTracker } from "@/components/tracking/MouseTracker";
-import { useEyeTracker } from "@/components/tracking/EyeTracker";
 import HeatmapOverlay from "@/components/visualization/HeatmapOverlay";
 import FocusReport from "@/components/reports/FocusReport";
-import { attentionEngine, AttentionMetrics } from "@/lib/analysis/AttentionEngine";
-import { adhdDetector, ADHDProfile } from "@/lib/analysis/ADHDDetector";
+import { useTracking } from "@/components/context/TrackingContext";
 
 interface UserProfile {
   name: string;
@@ -24,74 +21,33 @@ export default function DashboardPage() {
   const [showHeatmap, setShowHeatmap] = useState(false);
   
   // Tracking State
-  const [attentionMetrics, setAttentionMetrics] = useState<AttentionMetrics>({
-    score: 0.8,
-    state: 'focused',
-    confidence: 0.8,
-    factors: { mouse: 0.8, eye: 0.8, activity: 0.5 }
-  });
-  const [adhdProfile, setAdhdProfile] = useState<ADHDProfile>(adhdDetector['getEmptyProfile']()); // Access private method workaround or expose public
-  const [history, setHistory] = useState<AttentionMetrics[]>([]);
+  // Tracking State (Consumed from Context)
+  // const [attentionMetrics, setAttentionMetrics] = useState<AttentionMetrics>(...); // Removed
+  // const [adhdProfile, setAdhdProfile] = useState<ADHDProfile>(...); // Removed
+  // const [history, setHistory] = useState<AttentionMetrics[]>([]); // Removed
 
   // Gamification State
   const [totalPoints, setTotalPoints] = useState(0);
   const [focusSeconds, setFocusSeconds] = useState(0);
   const [level, setLevel] = useState(1);
 
-  // Initialize Trackers
-  const mouseMetrics = useMouseTracker();
-  
-  const { metrics: eyeMetrics } = useEyeTracker();
+  // Global Tracking State
+  const { attentionMetrics, mouseMetrics, eyeMetrics, adhdProfile, history } = useTracking();
 
-  // Analysis Loop
+  // Gamification Logic (Effect based on global metrics)
   useEffect(() => {
-    const interval = setInterval(() => {
-      const newMetrics = attentionEngine.calculateAttention(mouseMetrics, eyeMetrics);
-      setAttentionMetrics(newMetrics);
-      
-      // Track focus time for gamification
-      if (newMetrics.state === 'focused' || newMetrics.state === 'hyperfocus') {
-        setFocusSeconds(prev => {
-          const newSeconds = prev + 1;
-          // Every 60 seconds of focus, award points
-          if (newSeconds >= 60) {
-            updateGamification(60, newMetrics.score);
-            return 0;
-          }
-          return newSeconds;
-        });
-      }
-
-      setHistory(prev => {
-        const newHistory = [...prev, newMetrics];
-        if (newHistory.length > 60) { // Analyze every minute roughly
-           const profile = adhdDetector.analyzeSession(newHistory);
-           setAdhdProfile(profile);
+    if (attentionMetrics.state === 'focused' || attentionMetrics.state === 'hyperfocus') {
+      setFocusSeconds(prev => {
+        const newSeconds = prev + 1;
+        // Every 60 seconds of focus, award points
+        if (newSeconds >= 60) {
+          updateGamification(60, attentionMetrics.score);
+          return 0;
         }
-        return newHistory.slice(-300); // Keep last 5 mins
+        return newSeconds;
       });
-
-    }, 1000); // 1Hz sampling
-
-    // Separate interval for ADHD Analysis (every 30 seconds)
-    const analysisInterval = setInterval(() => {
-       setHistory(prevHistory => {
-          // Analyze the last 30 seconds of data
-          // Since we sample at 1Hz, we take the last 30 items
-          const recentHistory = prevHistory.slice(-30);
-          if (recentHistory.length >= 10) { // Require at least 10 seconds of data
-             const newProfile = adhdDetector.analyzeSession(recentHistory);
-             setAdhdProfile(newProfile);
-          }
-          return prevHistory;
-       });
-    }, 30000); // 30 seconds
-
-    return () => {
-      clearInterval(interval);
-      clearInterval(analysisInterval);
-    };
-  }, [mouseMetrics, eyeMetrics]);
+    }
+  }, [attentionMetrics.state, attentionMetrics.score]); // Run when state/score updates
 
   const updateGamification = async (duration: number, attentionScore: number) => {
     try {

@@ -8,12 +8,18 @@ export const metadata: Metadata = {
   description: 'Personalized, adaptive learning with attention-aware support.',
 }
 
+import GlobalStatus from '@/components/ui/GlobalStatus'
+import { TrackingProvider } from '@/components/context/TrackingContext'
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 transition-colors">
         <ThemeProvider>
-          {children}
+          <TrackingProvider>
+             <GlobalStatus />
+             {children}
+          </TrackingProvider>
         </ThemeProvider>
       </body>
     </html>
