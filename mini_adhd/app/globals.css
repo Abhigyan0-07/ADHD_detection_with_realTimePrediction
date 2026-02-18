@@ -33,6 +33,12 @@ body {
   background-size: cover;
 }
 
+.mesh-gradient {
+  background: radial-gradient(at 0% 0%, rgba(19, 182, 236, 0.15) 0%, transparent 50%),
+              radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+              rgb(var(--background-dark));
+}
+
 /* Glassmorphism Utilities */
 .glass-card {
   background: var(--glass-bg);
