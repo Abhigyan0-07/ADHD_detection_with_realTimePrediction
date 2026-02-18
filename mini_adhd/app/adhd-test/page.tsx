@@ -1,6 +1,9 @@
 "use client"
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { ProgressBar } from '@/components/ui/ProgressBar'
+import { Card } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
 
 const ADHD_QUESTIONS = [
   {
@@ -161,66 +164,110 @@ export default function ADHDTestPage() {
   const currentQ = ADHD_QUESTIONS[currentQuestion]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-xl shadow-lg p-8">
+    <div className="min-h-screen mesh-gradient text-white overflow-hidden font-display selection:bg-primary/30">
+      <div className="relative flex h-screen w-full max-w-md mx-auto flex-col p-6">
+        {/* Background decoration */}
+        <div className="fixed top-0 left-0 w-full h-full -z-10 opacity-30 pointer-events-none">
+          <div className="absolute top-[10%] left-[5%] w-64 h-64 bg-primary/20 blur-[120px] rounded-full" />
+          <div className="absolute bottom-[20%] right-[5%] w-80 h-80 bg-purple-500/10 blur-[120px] rounded-full" />
+        </div>
+
+        <div className="flex-1 flex flex-col gap-6 relative z-10">
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">ADHD Screening Assessment</h1>
             <p className="text-gray-600">This assessment helps us personalize your learning experience</p>
           </div>
 
-          <div className="mb-6">
-            <div className="flex justify-between text-sm text-gray-600 mb-2">
-              <span>Question {currentQuestion + 1} of {ADHD_QUESTIONS.length}</span>
-              <span>{Math.round(progress)}% Complete</span>
+          {/* Header Section */}
+          <header className="flex flex-col gap-4 pt-4 pb-2">
+            <div className="flex items-center justify-between">
+              <button onClick={() => router.back()} className="text-white/70 hover:text-white transition-colors">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+              <h1 className="text-sm font-semibold tracking-wider uppercase text-white/50">Assessment</h1>
+              <div className="w-6" /> {/* Spacer */}
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
-
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-6">
-              {currentQ.question}
-            </h2>
             
             <div className="space-y-3">
+              <div className="flex justify-between items-end">
+                <h2 className="text-2xl font-bold text-white">
+                  Question {currentQuestion + 1} <span className="text-white/40 font-medium text-lg">of {ADHD_QUESTIONS.length}</span>
+                </h2>
+                <span className="text-primary text-sm font-semibold">{Math.round(progress)}% Complete</span>
+              </div>
+              <ProgressBar progress={progress} />
+            </div>
+          </header>
+
+          {/* Question Card */}
+          <main className="flex-1 flex flex-col gap-6 overflow-y-auto no-scrollbar pb-24">
+            <Card 
+              key={currentQuestion}
+              className="rounded-xl p-8 shadow-2xl relative overflow-hidden transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 hover:shadow-[0_20px_40px_-15px_rgba(19,182,236,0.3)]"
+            >
+              <p className="text-xl md:text-2xl font-medium leading-relaxed text-white text-center">
+                {currentQ.question}
+              </p>
+            </Card>
+
+            {/* Answer Options */}
+            <div className="flex flex-col gap-3">
               {currentQ.options.map((option, index) => (
                 <button
                   key={index}
                   onClick={() => handleAnswer(option.value)}
-                  className={`w-full p-4 text-left rounded-lg border-2 transition-all ${
-                    answers[currentQuestion] === option.value
-                      ? 'border-blue-500 bg-blue-50 text-blue-700'
-                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                  }`}
+                  className="relative group cursor-pointer w-full text-left"
                 >
-                  <span className="font-medium">{option.text}</span>
+                  <div className={`flex items-center justify-between p-5 rounded-xl border transition-all duration-200 ${
+                    answers[currentQuestion] === option.value
+                      ? 'border-primary bg-primary/10'
+                      : 'border-white/10 bg-white/5 hover:bg-white/10'
+                  }`}>
+                    <span className={`text-lg font-medium transition-colors ${
+                      answers[currentQuestion] === option.value ? 'text-white' : 'text-white/80'
+                    }`}>
+                      {option.text}
+                    </span>
+                    
+                    {/* Custom Radio Indicator */}
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                      answers[currentQuestion] === option.value ? 'border-primary' : 'border-white/20'
+                    }`}>
+                      <div className={`w-3 h-3 rounded-full bg-primary transition-opacity ${
+                        answers[currentQuestion] === option.value ? 'opacity-100' : 'opacity-0'
+                      }`} />
+                    </div>
+                  </div>
                 </button>
               ))}
             </div>
-          </div>
+          </main>
 
-          <div className="flex justify-between">
-            <button
-              onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
-              disabled={currentQuestion === 0}
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Previous
-            </button>
-            
-            <button
-              onClick={handleNext}
-              disabled={answers[currentQuestion] === undefined || loading}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Processing...' : currentQuestion === ADHD_QUESTIONS.length - 1 ? 'Complete Test' : 'Next'}
-            </button>
-          </div>
+          {/* Bottom Navigation */}
+          <footer className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background-dark via-background-dark/80 to-transparent pt-12 z-20">
+            <div className="max-w-md mx-auto flex items-center justify-between gap-4">
+              <Button
+                variant="ghost"
+                onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
+                disabled={currentQuestion === 0}
+                className="flex items-center gap-2 h-14"
+              >
+                <span className="material-symbols-outlined text-sm">arrow_back_ios</span>
+                <span>Previous</span>
+              </Button>
+              
+              <Button
+                variant="primary"
+                fullWidth
+                onClick={handleNext}
+                disabled={answers[currentQuestion] === undefined || loading}
+                className="flex items-center justify-center gap-2 h-14"
+              >
+                <span>{loading ? 'Processing...' : currentQuestion === ADHD_QUESTIONS.length - 1 ? 'Complete Test' : 'Next Question'}</span>
+                {!loading && <span className="material-symbols-outlined">arrow_forward_ios</span>}
+              </Button>
+            </div>
+          </footer>
         </div>
       </div>
     </div>
