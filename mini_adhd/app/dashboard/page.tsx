@@ -142,137 +142,153 @@ export default function DashboardPage() {
   const attentionPercent = Math.round(attentionMetrics.score * 100);
 
   return (
-    <div className="space-y-6 relative">
-      <HeatmapOverlay 
-        mousePosition={mouseMetrics.position} 
-        gazePosition={{ x: eyeMetrics.gazeX, y: eyeMetrics.gazeY }} 
-        show={showHeatmap} 
-      />
+    <main className="min-h-screen mesh-gradient text-white p-4 md:p-8 relative overflow-hidden">
+      {/* Background Ambience */}
+      <div className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none">
+        <div className="absolute top-[10%] left-[5%] w-96 h-96 bg-primary/10 blur-[150px] rounded-full" />
+        <div className="absolute bottom-[10%] right-[5%] w-96 h-96 bg-purple-500/10 blur-[150px] rounded-full" />
+      </div>
 
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
-            Welcome, {profile?.name || "Learner"}
-          </h1>
-          <div className="mt-2 flex items-center space-x-4">
-            <button 
-              onClick={() => setShowHeatmap(!showHeatmap)}
-              className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                showHeatmap ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'
-              }`}
-            >
-              {showHeatmap ? '👁️ Heatmap On' : '👁️ Heatmap Off'}
-            </button>
-            {attentionMetrics.state === 'distracted' && (
-              <span className="text-red-600 font-bold animate-pulse">
-                ⚠️ Distraction Detected!
-              </span>
-            )}
+      <div className="max-w-7xl mx-auto space-y-8 relative z-10">
+        <HeatmapOverlay 
+          mousePosition={mouseMetrics.position} 
+          gazePosition={{ x: eyeMetrics.gazeX, y: eyeMetrics.gazeY }} 
+          show={showHeatmap} 
+        />
+
+        {/* Header Section */}
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div className="space-y-1">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+              Welcome back, <span className="bg-gradient-to-r from-primary-400 to-purple-400 bg-clip-text text-transparent">{profile?.name || "Learner"}</span>
+            </h1>
+            <p className="text-blue-100/60 font-medium">Ready to achieve your flow state?</p>
           </div>
-        </div>
-        <div className="text-sm text-gray-500 flex flex-col items-end space-y-2">
-          <div className="bg-yellow-100 px-3 py-1 rounded-full text-yellow-800 font-bold flex items-center">
-            <span className="mr-1">🪙</span> {totalPoints}
-          </div>
-          <div className="bg-purple-100 px-3 py-1 rounded-full text-purple-800 font-bold flex items-center">
-            <span className="mr-1">⭐</span> Lvl {level}
-          </div>
-          <div className="flex items-center space-x-4">
-             <div className="text-right">
-                <div className="text-xs text-gray-400">Screening Result</div>
-                {adhdLevel === "Not Taken" ? (
-                  <Link href="/adhd-test" className="text-sm font-semibold text-blue-600 hover:underline">
-                    Take Test
-                  </Link>
-                ) : (
-                  <div className="font-semibold text-blue-600">{adhdLevel}</div>
-                )}
+
+          <div className="flex items-center gap-4 bg-white/5 backdrop-blur-md border border-white/10 p-2 rounded-2xl">
+             <div className="px-4 py-2 bg-yellow-500/20 border border-yellow-500/30 rounded-xl flex items-center gap-2">
+                <span className="text-xl">🏆</span>
+                <span className="font-bold text-yellow-300">{totalPoints} pts</span>
              </div>
-             <div className="text-right border-l pl-4 border-gray-300 dark:border-gray-700">
-                <div className="text-xs text-gray-400">Real-time Risk</div>
-                <div className={`font-semibold ${adhdProfile.riskLevel === 'high' ? 'text-red-500' : adhdProfile.riskLevel === 'moderate' ? 'text-yellow-500' : 'text-green-500'}`}>
-                    {adhdProfile.riskLevel.toUpperCase()}
+             <div className="px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-xl flex items-center gap-2">
+                <span className="text-xl">⭐</span>
+                <span className="font-bold text-purple-300">Lvl {level}</span>
+             </div>
+          </div>
+        </header>
+
+        {/* Main Dashboard Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Left Column: Hero Metric (Span 8) */}
+          <div className="lg:col-span-8 flex flex-col gap-6">
+             {/* Placeholder for Hero Gauge - To be implemented next */}
+             <div className="glass-card rounded-3xl p-8 min-h-[300px] flex items-center justify-center relative overflow-hidden">
+                <div className="text-center space-y-4">
+                   <h2 className="text-2xl font-medium text-white/80">Current Attention</h2>
+                   <div className="text-8xl font-bold tracking-tighter bg-gradient-to-br from-white to-white/50 bg-clip-text text-transparent">
+                      {attentionPercent}%
+                   </div>
+                   <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium ${
+                      attentionMetrics.state === 'focused' ? 'bg-green-500/20 text-green-300 border border-green-500/30' :
+                      attentionMetrics.state === 'distracted' ? 'bg-red-500/20 text-red-300 border border-red-500/30' :
+                      'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                   }`}>
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-current opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-current"></span>
+                      </span>
+                      {attentionMetrics.state.toUpperCase()}
+                   </div>
                 </div>
              </div>
+
+             {/* Detailed Report Component */}
+             <div className="glass-card rounded-2xl p-6">
+                <FocusReport 
+                  currentMetrics={attentionMetrics} 
+                  adhdProfile={adhdProfile} 
+                  onExport={handleExport} 
+                />
+             </div>
+          </div>
+
+          {/* Right Column: Secondary Metrics (Span 4) */}
+          <div className="lg:col-span-4 flex flex-col gap-6">
+            
+            {/* Mouse Activity Card */}
+            <motion.div 
+               className="glass-card rounded-2xl p-6 border-l-4 border-green-400"
+               whileHover={{ scale: 1.02 }}
+            >
+               <div className="flex justify-between items-start mb-4">
+                  <div className="p-2 bg-green-500/20 rounded-lg">
+                     <span className="text-2xl">🖱️</span>
+                  </div>
+                  <span className="text-xs font-mono text-green-300 bg-green-500/10 px-2 py-1 rounded">ACTIVITY</span>
+               </div>
+               <div className="space-y-1">
+                  <div className="text-3xl font-bold">{mouseMetrics.isIdle ? 'Idle' : 'Active'}</div>
+                  <div className="text-sm text-white/50">Erratic Score: {Math.round(mouseMetrics.erraticScore * 100)}%</div>
+               </div>
+            </motion.div>
+
+            {/* Eye Contact Card */}
+            <motion.div 
+               className="glass-card rounded-2xl p-6 border-l-4 border-purple-400"
+               whileHover={{ scale: 1.02 }}
+            >
+               <div className="flex justify-between items-start mb-4">
+                  <div className="p-2 bg-purple-500/20 rounded-lg">
+                     <span className="text-2xl">👁️</span>
+                  </div>
+                  <span className="text-xs font-mono text-purple-300 bg-purple-500/10 px-2 py-1 rounded">GAZE</span>
+               </div>
+               <div className="space-y-1">
+                  <div className="text-3xl font-bold">{eyeMetrics.isDistracted ? 'Distracted' : 'Focused'}</div>
+                  <div className="text-sm text-white/50">{eyeMetrics.isDistracted ? 'Look at screen' : 'Tracking active'}</div>
+               </div>
+            </motion.div>
+
+            {/* Quick Actions */}
+            <div className="glass-card rounded-2xl p-6 space-y-4">
+               <h3 className="font-semibold text-lg text-white/90">Quick Actions</h3>
+               
+               <Link href="/dashboard/gamified" className="group block">
+                  <div className="w-full bg-gradient-to-r from-yellow-500/20 to-orange-500/20 hover:from-yellow-500/30 hover:to-orange-500/30 border border-yellow-500/30 rounded-xl p-4 transition-all flex items-center justify-between">
+                     <div className="flex items-center gap-3">
+                        <span className="text-2xl group-hover:scale-110 transition-transform">🎮</span>
+                        <span className="font-medium text-yellow-100">Gamified Mode</span>
+                     </div>
+                     <span className="text-yellow-500/50 group-hover:translate-x-1 transition-transform">→</span>
+                  </div>
+               </Link>
+
+               <Link href="/dashboard/learning" className="group block">
+                  <div className="w-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 hover:from-blue-500/30 hover:to-cyan-500/30 border border-blue-500/30 rounded-xl p-4 transition-all flex items-center justify-between">
+                     <div className="flex items-center gap-3">
+                        <span className="text-2xl group-hover:scale-110 transition-transform">📚</span>
+                        <span className="font-medium text-blue-100">Learning Hub</span>
+                     </div>
+                     <span className="text-blue-500/50 group-hover:translate-x-1 transition-transform">→</span>
+                  </div>
+               </Link>
+
+               <button 
+                 onClick={() => setShowHeatmap(!showHeatmap)}
+                 className={`w-full p-4 rounded-xl border transition-all flex items-center gap-3 ${
+                   showHeatmap 
+                     ? 'bg-red-500/20 border-red-500/30 text-red-100' 
+                     : 'bg-white/5 border-white/10 hover:bg-white/10 text-white/70'
+                 }`}
+               >
+                 <span>🔥</span>
+                 <span>{showHeatmap ? 'Disable Heatmap' : 'Enable Heatmap'}</span>
+               </button>
+            </div>
+
           </div>
         </div>
       </div>
-
-      {/* Main Metrics Grid */}
-      <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
-        <motion.div
-          className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-blue-500"
-          animate={{ scale: attentionMetrics.state === 'hyperfocus' ? 1.05 : 1 }}
-        >
-          <div className="text-gray-500 dark:text-gray-400 text-sm mb-2">Real-time Attention</div>
-          <div className="text-4xl font-bold text-blue-600 dark:text-blue-400">
-            {attentionPercent}%
-          </div>
-          <div className="text-xs text-gray-400 mt-1">
-            Based on Mouse & Eye
-          </div>
-        </motion.div>
-
-        <motion.div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-green-500">
-          <div className="text-gray-500 dark:text-gray-400 text-sm mb-2">Mouse Activity</div>
-          <div className="text-4xl font-bold text-green-600 dark:text-green-400">
-            {mouseMetrics.isIdle ? 'Idle' : 'Active'}
-          </div>
-          <div className="text-xs text-gray-400 mt-1">
-            Erratic Score: {Math.round(mouseMetrics.erraticScore * 100)}%
-          </div>
-        </motion.div>
-
-        <motion.div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-purple-500">
-          <div className="text-gray-500 dark:text-gray-400 text-sm mb-2">Eye Contact</div>
-          <div className={`text-4xl font-bold ${eyeMetrics.isDistracted ? 'text-red-500' : 'text-purple-600'} dark:text-purple-400`}>
-            {eyeMetrics.isDistracted ? 'Distracted' : 'Focused'}
-          </div>
-          <div className="text-xs text-gray-400 mt-1">
-            {eyeMetrics.isDistracted ? 'Please look at screen' : 'Gaze Tracking Active'}
-          </div>
-        </motion.div>
-
-        <motion.div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg border-l-4 border-orange-500">
-          <div className="text-gray-500 dark:text-gray-400 text-sm mb-2">Focus State</div>
-          <div className="text-2xl font-bold text-orange-600 dark:text-orange-400 capitalize">
-            {attentionMetrics.state}
-          </div>
-          <div className="text-xs text-gray-400 mt-1">
-            AI Detected
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Detailed Report */}
-      <FocusReport 
-        currentMetrics={attentionMetrics} 
-        adhdProfile={adhdProfile} 
-        onExport={handleExport} 
-      />
-
-      {/* Quick Actions */}
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-lg">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
-            Quick Actions
-          </h3>
-          <div className="space-y-3">
-            <Link href="/dashboard/gamified" className="block p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg hover:bg-yellow-100 transition-colors">
-              <div className="flex items-center justify-between">
-                <span className="font-medium text-yellow-800 dark:text-yellow-200">🎮 Gamified Dashboard</span>
-                <span className="text-yellow-600">→</span>
-              </div>
-            </Link>
-            <Link href="/dashboard/learning" className="block p-3 bg-green-50 dark:bg-green-900/20 rounded-lg hover:bg-green-100 transition-colors">
-              <div className="flex items-center justify-between">
-                <span className="font-medium text-green-800 dark:text-green-200">📚 Learning Hub</span>
-                <span className="text-green-600">→</span>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
+    </main>
   );
 }
