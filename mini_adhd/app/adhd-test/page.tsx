@@ -173,10 +173,7 @@ export default function ADHDTestPage() {
         </div>
 
         <div className="flex-1 flex flex-col gap-6 relative z-10">
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">ADHD Screening Assessment</h1>
-            <p className="text-gray-600">This assessment helps us personalize your learning experience</p>
-          </div>
+
 
           {/* Header Section */}
           <header className="flex flex-col gap-4 pt-4 pb-2">
