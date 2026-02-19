@@ -8,8 +8,8 @@ export default function GlobalStatus() {
   const { attentionMetrics, screeningResult } = useTracking()
   const pathname = usePathname()
 
-  // Hide on screening test page
-  if (pathname === '/adhd-test') return null
+  // Hide on public pages and screening test
+  if (['/', '/login', '/signup', '/adhd-test'].includes(pathname)) return null
 
   const screeningLevel = screeningResult !== null ? getADHDLevel(screeningResult) : 'Pend.'
   
