@@ -5,6 +5,19 @@ import { useRouter, usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import EyeTrackerDebug from "@/components/tracking/EyeTracker";
 import { EyeTrackerProvider } from "@/components/tracking/EyeTrackerContext";
+import { 
+  LayoutDashboard, 
+  Gamepad2, 
+  Target, 
+  Library, 
+  LineChart, 
+  GraduationCap, 
+  ClipboardCheck, 
+  Eye, 
+  FileText, 
+  Settings, 
+  LogOut 
+} from "lucide-react";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -22,16 +35,16 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   };
 
   const navItems = [
-    { name: "Overview", href: "/dashboard", icon: "📊" },
-    { name: "Gamified Dashboard", href: "/dashboard/gamified", icon: "🎮" },
-    { name: "Interactive Learning", href: "/dashboard/interactive-learning", icon: "🎯" },
-    { name: "Content Hub", href: "/dashboard/content-hub", icon: "📚" },
-    { name: "Real-Time Analytics", href: "/dashboard/realtime", icon: "📈" },
-    { name: "Learning Hub", href: "/learn", icon: "🧠" },
-    { name: "ADHD Test", href: "/adhd-test", icon: "📝" },
-    { name: "Attention Tracker", href: "/dashboard/attention", icon: "👁️" },
-    { name: "Reports", href: "/dashboard/reports", icon: "📑" },
-    { name: "Settings", href: "/dashboard/settings", icon: "⚙️" },
+    { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
+    { name: "Gamified Dashboard", href: "/dashboard/gamified", icon: Gamepad2 },
+    { name: "Interactive Learning", href: "/dashboard/interactive-learning", icon: Target },
+    { name: "Content Hub", href: "/dashboard/content-hub", icon: Library },
+    { name: "Real-Time Analytics", href: "/dashboard/realtime", icon: LineChart },
+    { name: "Learning Hub", href: "/learn", icon: GraduationCap },
+    { name: "ADHD Test", href: "/adhd-test", icon: ClipboardCheck },
+    { name: "Attention Tracker", href: "/dashboard/attention", icon: Eye },
+    { name: "Reports", href: "/dashboard/reports", icon: FileText },
+    { name: "Settings", href: "/dashboard/settings", icon: Settings },
   ];
 
   return (
@@ -50,6 +63,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
            <nav className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
               {navItems.map((item) => {
                  const isActive = pathname === item.href;
+                 const Icon = item.icon;
                  return (
                     <Link
                        key={item.href}
@@ -68,8 +82,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                              transition={{ type: "spring", stiffness: 300, damping: 30 }}
                           />
                        )}
-                       <span className={`text-xl transition-transform group-hover:scale-110 ${isActive ? "scale-110" : ""}`}>
-                          {item.icon}
+                       <span className={`transition-transform group-hover:scale-110 ${isActive ? "scale-110" : ""}`}>
+                          <Icon size={20} className={isActive ? "text-cyan-400" : ""} />
                        </span>
                        <span className={`font-medium relative z-10 ${isActive ? "text-cyan-100" : ""}`}>
                           {item.name}
@@ -87,7 +101,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                  onClick={handleLogout}
                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-slate-400 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/30 border border-transparent transition-all group"
               >
-                 <span className="group-hover:-translate-x-1 transition-transform">🚪</span>
+                 <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                  <span className="font-medium">Disconnect</span>
               </button>
            </div>
