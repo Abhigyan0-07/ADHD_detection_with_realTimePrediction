@@ -168,7 +168,9 @@ export const EyeTrackerProvider = ({ children }: { children: ReactNode }) => {
 
   // Detection Loop
   const lastDetectionTime = useRef<number>(0)
-  const DETECTION_INTERVAL = 100 // Run every 100ms (10 FPS)
+  const lastStateUpdateTime = useRef<number>(0)
+  const STATE_UPDATE_INTERVAL = 333 // Update state max 3 times per second
+  const DETECTION_INTERVAL = 100 // Run detection every 100ms
   
   const detectFace = async () => {
     if (!processingVideoRef.current || !modelRef.current) return
@@ -185,6 +187,12 @@ export const EyeTrackerProvider = ({ children }: { children: ReactNode }) => {
       return
     }
     lastDetectionTime.current = now
+
+    // Pause detection if tab is hidden to save resources
+    if (document.hidden) {
+       requestRef.current = requestAnimationFrame(detectFace)
+       return
+    }
 
     try {
       const detectedFaces = await modelRef.current.estimateFaces(video)
@@ -249,44 +257,43 @@ export const EyeTrackerProvider = ({ children }: { children: ReactNode }) => {
         const isHeadAway = nose.x < video.videoWidth * 0.2 || nose.x > video.videoWidth * 0.8 ||
                            nose.y < video.videoHeight * 0.2 || nose.y > video.videoHeight * 0.8
         
-        // Hysteresis for distraction to prevent flickering
-        // If currently distracted, require more "good" pose to clear it
-        // If currently focused, require more "bad" pose to trigger it
-        // We implement this via the attention score smoothing mostly, but let's be explicit
         const isDistractedRaw = isHeadAway
 
-        setMetrics(prev => {
-            // Smooth attention score (Exponential Moving Average)
-            // Alpha = 0.1 means new value has 10% weight, old has 90% -> very smooth
-            const targetScore = isDistractedRaw ? 0 : 1
-            const alpha = 0.05 
-            const newScore = prev.attentionScore * (1 - alpha) + targetScore * alpha
-            
-            // Determine distracted state based on smoothed score
-            // Hysteresis thresholds
-            const isDistracted = newScore < 0.4 // Must drop below 0.4 to be "distracted"
-            
-            return {
-              gazeX: finalGazeX,
-              gazeY: finalGazeY,
-              isBlinking,
-              blinkRate,
-              attentionScore: newScore,
-              isOffScreen: isHeadAway,
-              isDistracted
-            }
-        })
+        // Only update state if enough time passed OR important state change (blink)
+        if (now - lastStateUpdateTime.current > STATE_UPDATE_INTERVAL || isBlinking) {
+            lastStateUpdateTime.current = now
+            setMetrics(prev => {
+                const targetScore = isDistractedRaw ? 0 : 1
+                const alpha = 0.05 
+                const newScore = prev.attentionScore * (1 - alpha) + targetScore * alpha
+                const isDistracted = newScore < 0.4 
+                
+                return {
+                  gazeX: finalGazeX,
+                  gazeY: finalGazeY,
+                  isBlinking,
+                  blinkRate,
+                  attentionScore: newScore,
+                  isOffScreen: isHeadAway,
+                  isDistracted
+                }
+            })
+        }
+
       } else {
-        // No face
-        setMetrics(prev => {
-            const newScore = prev.attentionScore * 0.9 // Decay faster when no face
-            return {
-              ...prev,
-              isOffScreen: true,
-              isDistracted: true,
-              attentionScore: newScore
-            }
-        })
+        // No face - update state less frequently or immediately if status changed
+        if (now - lastStateUpdateTime.current > STATE_UPDATE_INTERVAL) {
+             lastStateUpdateTime.current = now
+             setMetrics(prev => {
+                const newScore = prev.attentionScore * 0.9 
+                return {
+                  ...prev,
+                  isOffScreen: true,
+                  isDistracted: true,
+                  attentionScore: newScore
+                }
+            })
+        }
       }
     } catch (err) {
       console.error("Detection error:", err)
@@ -306,8 +313,7 @@ export const EyeTrackerProvider = ({ children }: { children: ReactNode }) => {
     return (vertical1 + vertical2) / (2 * horizontal)
   }
 
-  return (
-    <EyeTrackerContext.Provider value={{
+  const contextValue = React.useMemo(() => ({
       metrics,
       stream,
       isInitialized,
@@ -317,7 +323,10 @@ export const EyeTrackerProvider = ({ children }: { children: ReactNode }) => {
       startCalibration,
       captureCalibrationPoint,
       faces
-    }}>
+  }), [metrics, stream, isInitialized, isCalibrating, calibrationPoints, currentCalibrationIndex, faces])
+
+  return (
+    <EyeTrackerContext.Provider value={contextValue}>
       {children}
       {/* Hidden video for processing */}
       <video 

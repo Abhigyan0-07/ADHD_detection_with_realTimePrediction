@@ -136,7 +136,7 @@ export default function RealTimeDashboard() {
       } catch (error) {
         console.error("Error collecting data:", error);
       }
-    }, 3000); // Collect data every 3 seconds
+    }, 5000); // Collect data every 5 seconds
   };
 
   const startPredictionUpdates = () => {
