@@ -188,11 +188,8 @@ export const EyeTrackerProvider = ({ children }: { children: ReactNode }) => {
     }
     lastDetectionTime.current = now
 
-    // Pause detection if tab is hidden to save resources
-    if (document.hidden) {
-       requestRef.current = requestAnimationFrame(detectFace)
-       return
-    }
+    // Pause detection check removed per user request
+    // if (document.hidden) { ... }
 
     try {
       const detectedFaces = await modelRef.current.estimateFaces(video)
