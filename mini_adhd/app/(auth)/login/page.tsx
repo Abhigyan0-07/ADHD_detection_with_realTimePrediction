@@ -25,10 +25,9 @@ export default function LoginPage() {
         data = await res.json();
       } catch (e) {
         console.error("Failed to parse login response:", e);
-        /* response not JSON or empty */
       }
       if (!res.ok) throw new Error(data?.error || "Login failed");
-      // Check if user has completed ADHD test
+      
       const userRes = await fetch("/api/user/profile");
       const userData = await userRes.json();
       if (userData.adhdScore === null || userData.adhdScore === undefined) {
@@ -43,52 +42,48 @@ export default function LoginPage() {
     }
   }
 
-  const handleSocialLogin = (provider: string) => {
-    if (provider === "Google") {
-      window.location.href = "/api/auth/google";
-    } else {
-      console.log(`Login with ${provider} not implemented yet`);
-    }
-  };
-
   return (
-    <main className="min-h-screen w-full flex items-center justify-center mesh-gradient p-4 relative overflow-hidden text-white">
-      {/* Background Shapes */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-[20%] left-[10%] w-72 h-72 bg-primary/20 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[20%] right-[10%] w-96 h-96 bg-purple-500/10 blur-[120px] rounded-full" />
+    <main className="min-h-screen w-full flex items-center justify-center bg-black mesh-bg relative overflow-hidden text-white selection:bg-cyan-500/30">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[20%] left-[10%] w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full mix-blend-screen animate-pulse-slow" />
+        <div className="absolute bottom-[20%] right-[10%] w-[600px] h-[600px] bg-purple-500/10 blur-[120px] rounded-full mix-blend-screen animate-pulse-slow delay-1000" />
       </div>
 
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-[440px] relative z-10"
+        className="w-full max-w-[440px] relative z-10 px-4"
       >
-        <div className="glass-card rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden">
+        <div className="glass-panel p-8 md:p-12 relative overflow-hidden border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+          {/* Decorative Glow */}
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-50" />
           
           <div className="text-center mb-10">
-            <h1 className="text-4xl font-bold mb-3 tracking-tight">Welcome Back</h1>
-            <p className="text-white/60 text-lg">Ready to focus?</p>
+            <h1 className="text-4xl font-bold mb-3 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-400 neon-text">
+              Welcome Back
+            </h1>
+            <p className="text-slate-400 text-lg">Ready to focus?</p>
           </div>
 
           {error && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
-              className="mb-6 p-4 bg-red-500/20 border border-red-500/30 text-red-200 text-sm rounded-2xl flex items-center gap-3"
+              className="mb-6 p-4 bg-red-500/10 border border-red-500/30 text-red-200 text-sm rounded-xl flex items-center gap-3"
             >
-              <div className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
+              <div className="w-2 h-2 rounded-full bg-red-500 shrink-0 shadow-[0_0_10px_#ef4444]" />
               {error}
             </motion.div>
           )}
 
           <form onSubmit={onSubmit} className="space-y-6">
             <div className="space-y-2 group">
-              <label className="text-sm font-semibold text-white/80 ml-1 group-focus-within:text-primary-300 transition-colors">Email</label>
+              <label className="text-sm font-medium text-slate-300 ml-1 group-focus-within:text-cyan-400 transition-colors">Email</label>
               <div className="relative">
                 <input
-                  className="w-full bg-white/5 border border-white/10 text-white rounded-2xl px-5 py-4 outline-none focus:bg-white/10 focus:ring-4 focus:ring-primary-500/20 focus:border-primary-400/50 transition-all duration-300 placeholder:text-white/20"
+                  className="w-full bg-black/20 border border-white/10 text-white rounded-xl px-5 py-4 outline-none focus:bg-black/40 focus:border-cyan-500/50 focus:shadow-[0_0_20px_rgba(6,182,212,0.15)] transition-all duration-300 placeholder:text-slate-600"
                   placeholder="name@example.com"
                   type="email"
                   required
@@ -100,16 +95,16 @@ export default function LoginPage() {
 
             <div className="space-y-2 group">
               <div className="flex justify-between items-center ml-1">
-                <label className="text-sm font-semibold text-white/80 group-focus-within:text-primary-300 transition-colors">Password</label>
+                <label className="text-sm font-medium text-slate-300 group-focus-within:text-cyan-400 transition-colors">Password</label>
                 <Link href="/forgot-password">
-                  <span className="text-xs font-semibold text-primary-300 hover:text-primary-200 cursor-pointer hover:underline decoration-2 underline-offset-2">
+                  <span className="text-xs font-medium text-cyan-400 hover:text-cyan-300 cursor-pointer transition-colors">
                     Forgot Password?
                   </span>
                 </Link>
               </div>
               <div className="relative">
                 <input
-                  className="w-full bg-white/5 border border-white/10 text-white rounded-2xl px-5 py-4 outline-none focus:bg-white/10 focus:ring-4 focus:ring-primary-500/20 focus:border-primary-400/50 transition-all duration-300 placeholder:text-white/20"
+                  className="w-full bg-black/20 border border-white/10 text-white rounded-xl px-5 py-4 outline-none focus:bg-black/40 focus:border-cyan-500/50 focus:shadow-[0_0_20px_rgba(6,182,212,0.15)] transition-all duration-300 placeholder:text-slate-600"
                   placeholder="••••••••"
                   type="password"
                   required
@@ -123,8 +118,9 @@ export default function LoginPage() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               disabled={loading}
-              className="w-full bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white font-bold rounded-2xl py-4 shadow-lg shadow-primary-500/25 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed mt-4"
+              className="w-full bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-bold rounded-xl py-4 shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed mt-4 relative overflow-hidden group"
             >
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
               <span className="relative flex items-center justify-center gap-2">
                 {loading ? (
                   <>
@@ -139,10 +135,10 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-10 text-center">
-            <p className="text-sm text-white/50 font-medium">
+            <p className="text-sm text-slate-400 font-medium">
               Don&apos;t have an account?{" "}
               <Link href="/signup">
-                <span className="text-primary-300 font-bold hover:text-primary-200 cursor-pointer transition-colors hover:underline decoration-2 underline-offset-2">
+                <span className="text-cyan-400 font-bold hover:text-cyan-300 cursor-pointer transition-colors">
                   Sign up now
                 </span>
               </Link>
