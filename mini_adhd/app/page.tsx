@@ -11,7 +11,7 @@ export default function Home() {
 
       <div className="max-w-xl w-full glass-card rounded-2xl shadow-2xl p-12 text-center space-y-8 relative z-10 border-white/10">
         <div className="space-y-4">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent tracking-tight">FocusFlow</h1>
+          <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent tracking-tight">FocusFlow</h1>
           <p className="text-xl text-white/70 font-light">AI Tutor for Neurodivergent Learners</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
