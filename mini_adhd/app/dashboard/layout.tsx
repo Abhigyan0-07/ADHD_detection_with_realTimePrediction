@@ -48,8 +48,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   ];
 
   return (
-    <EyeTrackerProvider>
-      <div className="min-h-screen flex bg-black mesh-bg text-white font-sans selection:bg-cyan-500/30">
+    <div className="min-h-screen flex bg-black mesh-bg text-white font-sans selection:bg-cyan-500/30">
         {/* Glassmorphic Sidebar */}
         <aside className="w-64 fixed inset-y-0 left-0 z-50 glass-panel border-r border-white/10 flex flex-col backdrop-blur-xl">
            <div className="p-6 flex items-center justify-center border-b border-white/5">
@@ -121,6 +120,5 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
         <EyeTrackerDebug />
       </div>
-    </EyeTrackerProvider>
   );
 }

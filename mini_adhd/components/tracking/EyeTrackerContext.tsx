@@ -112,7 +112,7 @@ export const EyeTrackerProvider = ({ children }: { children: ReactNode }) => {
   const startCamera = async () => {
     try {
       const newStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { width: 640, height: 480, facingMode: 'user' } 
+        video: { width: 320, height: 240, facingMode: 'user' } 
       })
       setStream(newStream)
       if (processingVideoRef.current) {
@@ -337,8 +337,8 @@ export const EyeTrackerProvider = ({ children }: { children: ReactNode }) => {
       <video 
         ref={processingVideoRef} 
         style={{ display: 'none' }} 
-        width={640} 
-        height={480} 
+        width={320} 
+        height={240} 
         playsInline 
         muted 
       />
