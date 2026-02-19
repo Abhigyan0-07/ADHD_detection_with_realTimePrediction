@@ -170,7 +170,7 @@ export const EyeTrackerProvider = ({ children }: { children: ReactNode }) => {
   const lastDetectionTime = useRef<number>(0)
   const lastStateUpdateTime = useRef<number>(0)
   const STATE_UPDATE_INTERVAL = 333 // Update state max 3 times per second
-  const DETECTION_INTERVAL = 100 // Run detection every 100ms
+  const DETECTION_INTERVAL = 200 // Run detection every 200ms (5 FPS)
   
   const detectFace = async () => {
     if (!processingVideoRef.current || !modelRef.current) return
@@ -196,7 +196,6 @@ export const EyeTrackerProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const detectedFaces = await modelRef.current.estimateFaces(video)
-      setFaces(detectedFaces)
       
       if (detectedFaces.length > 0) {
         const face = detectedFaces[0]
@@ -262,9 +261,14 @@ export const EyeTrackerProvider = ({ children }: { children: ReactNode }) => {
         // Only update state if enough time passed OR important state change (blink)
         if (now - lastStateUpdateTime.current > STATE_UPDATE_INTERVAL || isBlinking) {
             lastStateUpdateTime.current = now
+            
+            // Only update faces state here too to prevent re-renders
+            setFaces(detectedFaces)
+            
             setMetrics(prev => {
                 const targetScore = isDistractedRaw ? 0 : 1
-                const alpha = 0.05 
+                // Increased alpha from 0.05 to 0.1 since we update less frequently now
+                const alpha = 0.1 
                 const newScore = prev.attentionScore * (1 - alpha) + targetScore * alpha
                 const isDistracted = newScore < 0.4 
                 
@@ -281,9 +285,10 @@ export const EyeTrackerProvider = ({ children }: { children: ReactNode }) => {
         }
 
       } else {
-        // No face - update state less frequently or immediately if status changed
+        // No face - update state less frequently
         if (now - lastStateUpdateTime.current > STATE_UPDATE_INTERVAL) {
              lastStateUpdateTime.current = now
+             setFaces([]) // Clear faces
              setMetrics(prev => {
                 const newScore = prev.attentionScore * 0.9 
                 return {
