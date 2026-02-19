@@ -3,7 +3,6 @@ import { ReactNode } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import ThemeToggle from "@/components/ThemeToggle";
 import EyeTrackerDebug from "@/components/tracking/EyeTracker";
 import { EyeTrackerProvider } from "@/components/tracking/EyeTrackerContext";
 
@@ -40,16 +39,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       <div className="min-h-screen flex bg-black mesh-bg text-white font-sans selection:bg-cyan-500/30">
         {/* Glassmorphic Sidebar */}
         <aside className="w-64 fixed inset-y-0 left-0 z-50 glass-panel border-r border-white/10 flex flex-col backdrop-blur-xl">
-           <div className="p-6 flex items-center justify-between border-b border-white/5">
+           <div className="p-6 flex items-center justify-center border-b border-white/5">
               <Link href="/" className="group">
                  <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-400 neon-text group-hover:scale-105 transition-transform">
                     FocusFlow
                  </h1>
               </Link>
-              {/* Theme Toggle Hidden or styled minimally - kept for functionality */}
-              <div className="opacity-50 hover:opacity-100 transition-opacity">
-                <ThemeToggle />
-              </div>
            </div>
 
            <nav className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
