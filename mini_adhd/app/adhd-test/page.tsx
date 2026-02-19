@@ -205,7 +205,7 @@ export default function ADHDTestPage() {
               key={currentQuestion}
               className="rounded-xl p-8 shadow-2xl relative overflow-hidden transition-all duration-500 animate-in fade-in slide-in-from-bottom-4 hover:shadow-[0_20px_40px_-15px_rgba(19,182,236,0.3)]"
             >
-              <p className="text-xl md:text-2xl font-medium leading-relaxed text-white text-center">
+              <p className="text-lg md:text-xl font-medium leading-relaxed text-white text-center">
                 {currentQ.question}
               </p>
             </Card>
