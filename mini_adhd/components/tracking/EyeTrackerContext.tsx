@@ -112,7 +112,7 @@ export const EyeTrackerProvider = ({ children }: { children: ReactNode }) => {
   const startCamera = async () => {
     try {
       const newStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { width: 320, height: 240, facingMode: 'user' } 
+        video: { width: 640, height: 480, facingMode: 'user' } 
       })
       setStream(newStream)
       if (processingVideoRef.current) {
@@ -170,7 +170,7 @@ export const EyeTrackerProvider = ({ children }: { children: ReactNode }) => {
   const lastDetectionTime = useRef<number>(0)
   const lastStateUpdateTime = useRef<number>(0)
   const STATE_UPDATE_INTERVAL = 333 // Update state max 3 times per second
-  const DETECTION_INTERVAL = 200 // Run detection every 200ms (5 FPS)
+  const DETECTION_INTERVAL = 100 // Run detection every 100ms (10 FPS) as requested
   
   const detectFace = async () => {
     if (!processingVideoRef.current || !modelRef.current) return
@@ -337,8 +337,8 @@ export const EyeTrackerProvider = ({ children }: { children: ReactNode }) => {
       <video 
         ref={processingVideoRef} 
         style={{ display: 'none' }} 
-        width={320} 
-        height={240} 
+        width={640} 
+        height={480} 
         playsInline 
         muted 
       />
