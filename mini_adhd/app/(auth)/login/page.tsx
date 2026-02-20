@@ -30,7 +30,12 @@ export default function LoginPage() {
       
       const userRes = await fetch("/api/user/profile");
       const userData = await userRes.json();
-      if (userData.adhdScore === null || userData.adhdScore === undefined) {
+
+      if (userData.role === 'Admin') {
+        router.push("/dashboard/admin");
+      } else if (userData.role === 'Educator') {
+        router.push("/dashboard/educator");
+      } else if (userData.adhdScore === null || userData.adhdScore === undefined) {
         router.push("/adhd-test");
       } else {
         router.push("/dashboard");
@@ -134,7 +139,7 @@ export default function LoginPage() {
             </motion.button>
           </form>
 
-          <div className="mt-10 text-center">
+          <div className="mt-10 text-center space-y-6">
             <p className="text-sm text-slate-400 font-medium">
               Don&apos;t have an account?{" "}
               <Link href="/signup">
@@ -143,6 +148,15 @@ export default function LoginPage() {
                 </span>
               </Link>
             </p>
+
+            <div className="pt-6 border-t border-white/5 flex flex-wrap justify-center gap-6 opacity-60 hover:opacity-100 transition-opacity">
+              <Link href="/educator-login" className="text-[10px] font-bold uppercase tracking-[0.2em] hover:text-cyan-400 transition-colors">
+                Educator Access
+              </Link>
+              <Link href="/admin-login" className="text-[10px] font-bold uppercase tracking-[0.2em] hover:text-red-400 transition-colors">
+                Admin Console
+              </Link>
+            </div>
           </div>
         </div>
       </motion.div>
