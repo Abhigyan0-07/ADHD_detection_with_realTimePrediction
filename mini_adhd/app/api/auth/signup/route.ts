@@ -26,8 +26,18 @@ export async function POST(req: NextRequest) {
     
     const token = signJwt({ userId: user._id, role: user.role, name: user.name })
     setAuthCookie(token)
+
+    // Set role cookie for middleware routing
+    const { cookies } = require('next/headers')
+    cookies().set('focusflow_role', user.role, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+    })
     
-    return NextResponse.json({ ok: true })
+    return NextResponse.json({ ok: true, role: user.role })
   } catch (error: any) {
     console.error("❌ Signup error:", error);
     return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
