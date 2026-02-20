@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { motion } from "framer-motion";
@@ -16,12 +16,14 @@ import {
   Eye, 
   FileText, 
   Settings, 
-  LogOut 
+  LogOut,
+  ShieldCheck
 } from "lucide-react";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [role, setRole] = useState<string | null>(null);
 
   const handleLogout = async () => {
     try {
@@ -34,18 +36,35 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     }
   };
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/user/profile");
+        const data = await res.json();
+        setRole(data.role);
+      } catch (err) {
+        console.error("Failed to fetch user role:", err);
+      }
+    };
+    fetchUser();
+  }, []);
+
   const navItems = [
-    { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Gamified Dashboard", href: "/dashboard/gamified", icon: Gamepad2 },
-    { name: "Interactive Learning", href: "/dashboard/interactive-learning", icon: Target },
-    { name: "Content Hub", href: "/dashboard/content-hub", icon: Library },
-    { name: "Real-Time Analytics", href: "/dashboard/realtime", icon: LineChart },
-    { name: "Learning Hub", href: "/learn", icon: GraduationCap },
-    { name: "ADHD Test", href: "/adhd-test", icon: ClipboardCheck },
-    { name: "Attention Tracker", href: "/dashboard/attention", icon: Eye },
-    { name: "Reports", href: "/dashboard/reports", icon: FileText },
-    { name: "Settings", href: "/dashboard/settings", icon: Settings },
+    { name: "Overview", href: "/dashboard", icon: LayoutDashboard, roles: ['Student', 'Educator', 'Admin'] },
+    { name: "Student Console", href: "/dashboard/educator", icon: GraduationCap, roles: ['Educator', 'Admin'] },
+    { name: "Admin Console", href: "/dashboard/admin", icon: ShieldCheck, roles: ['Admin'] },
+    { name: "Gamified Dashboard", href: "/dashboard/gamified", icon: Gamepad2, roles: ['Student'] },
+    { name: "Interactive Learning", href: "/dashboard/interactive-learning", icon: Target, roles: ['Student'] },
+    { name: "Content Hub", href: "/dashboard/content-hub", icon: Library, roles: ['Student'] },
+    { name: "Real-Time Analytics", href: "/dashboard/realtime", icon: LineChart, roles: ['Student', 'Educator', 'Admin'] },
+    { name: "Learning Hub", href: "/learn", icon: GraduationCap, roles: ['Student'] },
+    { name: "ADHD Test", href: "/adhd-test", icon: ClipboardCheck, roles: ['Student'] },
+    { name: "Attention Tracker", href: "/dashboard/attention", icon: Eye, roles: ['Student'] },
+    { name: "Reports", href: "/dashboard/reports", icon: FileText, roles: ['Student', 'Educator', 'Admin'] },
+    { name: "Settings", href: "/dashboard/settings", icon: Settings, roles: ['Student', 'Educator', 'Admin'] },
   ];
+
+  const filteredNavItems = navItems.filter(item => !item.roles || (role && item.roles.includes(role)));
 
   return (
     <div className="min-h-screen flex bg-black mesh-bg text-white font-sans selection:bg-cyan-500/30">
@@ -60,7 +79,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
            </div>
 
            <nav className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
-              {navItems.map((item) => {
+              {filteredNavItems.map((item) => {
                  const isActive = pathname === item.href;
                  const Icon = item.icon;
                  return (
