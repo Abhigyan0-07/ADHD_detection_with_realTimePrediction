@@ -34,6 +34,17 @@ export async function POST(req: NextRequest) {
     const token = signJwt({ userId: user._id, role: user.role, name: user.name })
     setAuthCookie(token)
     
+    // Set role cookie for middleware routing (UI/Routing hint)
+    const { cookies } = require('next/headers')
+    cookies().set('focusflow_role', user.role, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+    })
+    
+    
     console.log(`✅ Login successful for: ${email}`);
     return NextResponse.json({ ok: true })
   } catch (error: any) {
