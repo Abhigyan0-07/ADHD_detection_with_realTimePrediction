@@ -32,7 +32,14 @@ export default function SignupPage() {
         /* response not JSON or empty */
       }
       if (!res.ok) throw new Error(data?.error || "Signup failed");
-      router.push("/adhd-test");
+      
+      if (data?.role === 'Educator') {
+        router.push("/dashboard/educator");
+      } else if (data?.role === 'Admin') {
+        router.push("/dashboard/admin");
+      } else {
+        router.push("/adhd-test");
+      }
     } catch (err: any) {
       console.error('Signup Error:', err);
       setError(err.message);
@@ -193,6 +200,15 @@ export default function SignupPage() {
                 </span>
               </Link>
             </p>
+
+            <div className="pt-6 border-t border-white/5 flex flex-wrap justify-center gap-6 opacity-60 hover:opacity-100 transition-opacity">
+              <Link href="/educator-login" className="text-[10px] font-bold uppercase tracking-[0.2em] hover:text-cyan-400 transition-colors">
+                Educator Access
+              </Link>
+              <Link href="/admin-login" className="text-[10px] font-bold uppercase tracking-[0.2em] hover:text-red-400 transition-colors">
+                Admin Console
+              </Link>
+            </div>
           </form>
         </div>
       </motion.div>
