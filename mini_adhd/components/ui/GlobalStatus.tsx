@@ -9,7 +9,7 @@ export default function GlobalStatus() {
   const pathname = usePathname()
 
   // Hide on public pages and screening test
-  if (['/', '/login', '/signup', '/adhd-test'].includes(pathname)) return null
+  if (['/', '/login', '/signup', '/register', '/adhd-test', '/educator-login', '/admin-login'].includes(pathname)) return null
 
   const screeningLevel = screeningResult !== null ? getADHDLevel(screeningResult) : 'Pend.'
   
