@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
 
-export type UserRole = 'Student' | 'Parent' | 'Educator'
+export type UserRole = 'Student' | 'Parent' | 'Educator' | 'Admin'
 
 export interface UserPreferences {
   fontSize?: string
@@ -54,7 +54,7 @@ const UserSchema = new Schema<IUser>({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ['Student', 'Parent', 'Educator'], required: true },
+  role: { type: String, enum: ['Student', 'Parent', 'Educator', 'Admin'], required: true },
   adhdScore: { type: Number, min: 0, max: 100 },
   linkedUsers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   preferences: { type: PreferencesSchema, default: {} },
